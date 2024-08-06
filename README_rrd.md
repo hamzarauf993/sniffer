@@ -94,4 +94,3 @@ Syntax:
 		If you want to send image on stdout, skip this argument.
 ```
 
-* arguments in square brackets are optional, if you don't define them, default values are used.
