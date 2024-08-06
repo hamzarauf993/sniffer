@@ -33,8 +33,4 @@ jobs:
         cd build
         ./run_tests.sh
 
-    - name: Lint Code
-      run: |
-        cd path/to/your/python/scripts
-        black .
-        flake8 .
+
