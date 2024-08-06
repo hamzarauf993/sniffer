@@ -23,7 +23,7 @@ jobs:
 
     - name: Build Project
       run: |
-        mkdir build
+        mkdir -p build
         cd build
         cmake ..
         make
@@ -33,4 +33,8 @@ jobs:
         cd build
         ./run_tests.sh
 
-
+    - name: Lint Code
+      run: |
+        cd path/to/your/python/scripts
+        black .
+        flake8 .
