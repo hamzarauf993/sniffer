@@ -1,40 +1,23 @@
-name: CI for VoIP Monitoring
+name: SSH Access to VM
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - main
+on: [push]  # Trigger the workflow on push events (you can adjust this)
 
 jobs:
-  build:
+  ssh-access:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential cmake libpcap-dev
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Build Project
+    - name: Connect to VM and Run Commands
       run: |
-        mkdir -p build
-        cd build
-        cmake ..
-        make
-
-    - name: Run Tests
-      run: |
-        cd build
-        ./run_tests.sh
-
-    - name: Lint Code
-      run: |
-        cd path/to/your/python/scripts
-        black .
-        flake8 .
+        ssh -o StrictHostKeyChecking=no user@vm-ip-address 'bash -s' << 'EOF'
+        # Replace this line with your commands to be executed on the VM
+        echo "Connected to VM successfully"
+        EOF
