@@ -11,13 +11,13 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up SSH
-      uses: webfactory/ssh-root@172.30.205.125
+      uses: webfactory/ssh-hamza@172.30.205.125
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Connect to VM and Run Commands
       run: |
-        ssh -o StrictHostKeyChecking=no root@172.30.205.125 'bash -s' << 'EOF'
+        ssh -o StrictHostKeyChecking=no hamza@172.30.205.125 'bash -s' << 'EOF'
         # Replace this line with your commands to be executed on the VM
         echo "Connected to VM successfully"
         EOF
