@@ -1,23 +1,45 @@
-name: SSH Access to VM
+name: Setup Sniffer
 
-on: [push]  # Trigger the workflow on push events (you can adjust this)
+on:
+  workflow_dispatch:
 
 jobs:
-  ssh-access:
-    runs-on: self-hosted
+  setup-sniffer-client:
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up SSH
-      uses: webfactory/ssh-hamza@172.30.205.125
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Install SSH client
+      run: sudo apt-get install -y openssh-client
 
-    - name: Connect to VM and Run Commands
+    - name: SSH and setup sniffer on client
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        ssh -o StrictHostKeyChecking=no hamza@172.30.205.125 'bash -s' << 'EOF'
-        # Replace this line with your commands to be executed on the VM
-        echo "Connected to VM successfully"
+        echo "$SSH_PASSWORD" | sshpass ssh -o StrictHostKeyChecking=no user@vm-client-ip 'bash -s' <<'EOF'
+        # Commands to set up the sniffer in client mode
+        # Replace the following line with your setup commands
+        echo "Setting up sniffer in client mode"
+        EOF
+
+  setup-sniffer-server:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install SSH client
+      run: sudo apt-get install -y openssh-client
+
+    - name: SSH and setup sniffer on server
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        echo "$SSH_PASSWORD" | sshpass ssh -o StrictHostKeyChecking=no user@vm-server-ip 'bash -s' <<'EOF'
+        # Commands to set up the sniffer in server mode
+        # Replace the following line with your setup commands
+        echo "Setting up sniffer in server mode"
         EOF
