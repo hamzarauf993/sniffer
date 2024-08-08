@@ -41,21 +41,11 @@ jobs:
         # Clone the sniffer repository
         git clone https://github.com/xFlowResearch/sniffer.git
         cd sniffer
-
         # Check out the desired commit
         git log --oneline --decorate
         git checkout db858a3f
-
         # Create a new branch for version 30.8.1
         git checkout -b version-30.8.1
-
         ./configure(when installing the first time) 
-
-         make clean 
-
-         make -j7 
-
-         sudo make install 
-
-        echo "Setting up sniffer in client mode"
-        EOF
+         echo "Setting up sniffer in client mode"
+         EOF
