@@ -28,7 +28,7 @@ jobs:
     - name: Verify VPN connection
       run: |
         ifconfig # Check if VPN interface is up
-        ping -c 172.30.205.125 # Replace with the actual IP you want to test
+        ping 172.30.205.125 # Replace with the actual IP you want to test
 
     - name: SSH and setup sniffer on client
       env:
