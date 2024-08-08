@@ -49,9 +49,17 @@ jobs:
     - name: SSH and clone sniffer repository
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
-        git clone https://github.com/xFlowResearch/sniffer.git
+        git clone https://${GITHUB_TOKEN}@github.com/xFlowResearch/sniffer.git
+        EOF
+
+    - name: SSH and checkout desired commit
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         cd sniffer
         git log --oneline --decorate
         git checkout db858a3f
