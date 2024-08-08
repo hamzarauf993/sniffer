@@ -26,6 +26,10 @@ jobs:
         sudo openvpn --config ~/vpn/client.ovpn --daemon
         sleep 30 # Give some time for VPN to establish connection
 
+    - name: Check OpenVPN logs
+      run: |
+        cat /var/log/syslog | grep openvpn
+
     - name: Verify VPN connection
       run: |
         ifconfig # Check if VPN interface is up
@@ -61,6 +65,10 @@ jobs:
       run: |
         sudo openvpn --config ~/vpn/client.ovpn --daemon
         sleep 30 # Give some time for VPN to establish connection
+
+    - name: Check OpenVPN logs
+      run: |
+        cat /var/log/syslog | grep openvpn
 
     - name: Verify VPN connection
       run: |
