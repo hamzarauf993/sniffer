@@ -30,12 +30,19 @@ jobs:
         ifconfig # Check if VPN interface is up
         ping -c 10 172.30.205.125 # Replace with the actual IP you want to test
 
-    - name: SSH and update & install packages
+    - name: SSH and update packages
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=3 root@172.30.205.125 'bash -s' <<'EOF'
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         apt-get update
+        EOF
+
+    - name: SSH and install dependencies
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         apt-get install -y build-essential libcurl4-openssl-dev libfftw3-dev libgcrypt-dev libglib2.0-dev libgoogle-perftools-dev libjson-c-dev liblzma-dev liblzo2-dev default-libmysqlclient-dev libpcap-dev libpng-dev librrd-dev libsnappy-dev libssh-dev libvorbis-dev libxml2-dev unixodbc-dev unzip
         EOF
 
@@ -43,7 +50,7 @@ jobs:
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=3 root@172.30.205.125 'bash -s' <<'EOF'
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         git clone https://github.com/xFlowResearch/sniffer.git
         EOF
 
@@ -51,7 +58,7 @@ jobs:
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=3 root@172.30.205.125 'bash -s' <<'EOF'
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         cd sniffer
         git log --oneline --decorate
         git checkout db858a3f
