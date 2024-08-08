@@ -31,10 +31,8 @@ jobs:
         ping -c 10 172.30.205.125 # Replace with the actual IP you want to test
 
     - name: SSH and setup sniffer on client
-      env:
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no root@172.30.205.125 'bash -s' <<'EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@172.30.205.125 'bash -s' <<'EOF'
         # Commands to set up the sniffer in client mode
         echo "Setting up sniffer in client mode"
         EOF
