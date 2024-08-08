@@ -19,7 +19,7 @@ jobs:
     - name: Start VPN connection
       run: |
         sudo openvpn --config $GITHUB_WORKSPACE/HamzaRauf.ovpn --daemon
-        sleep 30 # Give some time for VPN to establish connection
+        sleep 20 # Give some time for VPN to establish connection
 
     - name: Check OpenVPN logs
       run: |
@@ -28,7 +28,7 @@ jobs:
     - name: Verify VPN connection
       run: |
         ifconfig # Check if VPN interface is up
-        ping -c 4 172.30.205.125 # Replace with the actual IP you want to test
+        ping -c 172.30.205.125 # Replace with the actual IP you want to test
 
     - name: SSH and setup sniffer on client
       env:
