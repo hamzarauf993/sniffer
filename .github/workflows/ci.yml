@@ -30,15 +30,11 @@ jobs:
         ifconfig # Check if VPN interface is up
         ping -c 10 172.30.205.125 # Replace with the actual IP you want to test
         
-    - name: Add SSH private key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        
     - name: SSH and setup sniffer on client
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@172.30.205.125 'bash -s' <<'EOF'
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no root@172.30.205.125 'bash -s' <<'EOF'
         # Commands to set up the sniffer in client mode
         echo "Setting up sniffer in client mode"
         EOF
