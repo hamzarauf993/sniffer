@@ -28,13 +28,13 @@ jobs:
     - name: Verify VPN connection
       run: |
         ifconfig # Check if VPN interface is up
-        ping -c 4 vm-client-ip # Replace with the actual IP you want to test
+        ping -c 4 172.30.205.125 # Replace with the actual IP you want to test
 
     - name: SSH and setup sniffer on client
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no user@vm-client-ip 'bash -s' <<'EOF'
+        echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no root@172.30.205.125 'bash -s' <<'EOF'
         # Commands to set up the sniffer in client mode
         echo "Setting up sniffer in client mode"
         EOF
@@ -63,13 +63,13 @@ jobs:
     - name: Verify VPN connection
       run: |
         ifconfig # Check if VPN interface is up
-        ping -c 4 vm-server-ip # Replace with the actual IP you want to test
+        ping -c 4 172.30.205.125 # Replace with the actual IP you want to test
 
     - name: SSH and setup sniffer on server
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no user@vm-server-ip 'bash -s' <<'EOF'
+        echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no root@172.30.205.125 'bash -s' <<'EOF'
         # Commands to set up the sniffer in server mode
         echo "Setting up sniffer in server mode"
         EOF
