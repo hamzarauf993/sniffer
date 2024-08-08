@@ -38,5 +38,24 @@ jobs:
         # Commands to set up the sniffer in client mode
         apt-get update
         apt-get install -y build-essential libcurl4-openssl-dev libfftw3-dev libgcrypt-dev libglib2.0-dev libgoogle-perftools-dev libjson-c-dev liblzma-dev liblzo2-dev default-libmysqlclient-dev libpcap-dev libpng-dev librrd-dev libsnappy-dev libssh-dev libvorbis-dev libxml2-dev unixodbc-dev unzip
+        # Clone the sniffer repository
+        git clone https://github.com/xFlowResearch/sniffer.git
+        cd sniffer
+
+        # Check out the desired commit
+        git log --oneline --decorate
+        git checkout db858a3f
+
+        # Create a new branch for version 30.8.1
+        git checkout -b version-30.8.1
+
+        ./configure(when installing the first time) 
+
+         make clean 
+
+         make -j7 
+
+         sudo make install 
+
         echo "Setting up sniffer in client mode"
         EOF
