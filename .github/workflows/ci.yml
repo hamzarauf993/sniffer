@@ -29,22 +29,32 @@ jobs:
       run: |
         ifconfig # Check if VPN interface is up
         ping -c 10 172.30.205.125 # Replace with the actual IP you want to test
-        
-    - name: SSH and setup sniffer on client
+
+    - name: SSH and update & install packages
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no root@172.30.205.125 'bash -s' <<'EOF'
-        # Commands to set up the sniffer in client mode
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=3 root@172.30.205.125 'bash -s' <<'EOF'
         apt-get update
         apt-get install -y build-essential libcurl4-openssl-dev libfftw3-dev libgcrypt-dev libglib2.0-dev libgoogle-perftools-dev libjson-c-dev liblzma-dev liblzo2-dev default-libmysqlclient-dev libpcap-dev libpng-dev librrd-dev libsnappy-dev libssh-dev libvorbis-dev libxml2-dev unixodbc-dev unzip
-        # Clone the sniffer repository
+        EOF
+
+    - name: SSH and clone sniffer repository
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=3 root@172.30.205.125 'bash -s' <<'EOF'
         git clone https://github.com/xFlowResearch/sniffer.git
+        EOF
+
+    - name: SSH and checkout desired commit
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=3 root@172.30.205.125 'bash -s' <<'EOF'
         cd sniffer
-        # Check out the desired commit
         git log --oneline --decorate
         git checkout db858a3f
-        # Create a new branch for version 30.8.1
         git checkout -b version-30.8.1
         echo "Setting up sniffer in client mode"
         EOF
