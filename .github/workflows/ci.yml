@@ -36,5 +36,7 @@ jobs:
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no root@172.30.205.125 'bash -s' <<'EOF'
         # Commands to set up the sniffer in client mode
+        apt-get update
+        apt-get install -y build-essential libcurl4-openssl-dev libfftw3-dev libgcrypt-dev libglib2.0-dev libgoogle-perftools-dev libjson-c-dev liblzma-dev liblzo2-dev default-libmysqlclient-dev libpcap-dev libpng-dev librrd-dev libsnappy-dev libssh-dev libvorbis-dev libxml2-dev unixodbc-dev unzip
         echo "Setting up sniffer in client mode"
         EOF
