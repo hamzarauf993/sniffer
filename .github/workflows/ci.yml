@@ -69,3 +69,12 @@ jobs:
         git checkout -b version-30.8.1
         echo "Setting up sniffer in client mode"
         EOF
+
+    - name: SSH and run configure script
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        cd sniffer
+        ./configure
+        EOF
