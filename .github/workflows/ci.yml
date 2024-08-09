@@ -19,7 +19,7 @@ jobs:
     - name: Start VPN connection
       run: |
         sudo openvpn --config $GITHUB_WORKSPACE/HamzaRauf.ovpn --daemon
-        sleep 60 # Increased time for VPN to establish connection
+        sleep 30 # Increased sleep time to ensure VPN connection is fully established
 
     - name: Check OpenVPN logs
       run: |
@@ -34,35 +34,27 @@ jobs:
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        for i in {1..5}; do
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
-          apt-get update
-          EOF
-          if [ $? -eq 0 ]; then break; fi
-          sleep 10
-        done
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        apt-get update
+        EOF
 
     - name: SSH and install dependencies
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        for i in {1..5}; do
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
-          apt-get install -y build-essential libcurl4-openssl-dev libfftw3-dev libgcrypt-dev libglib2.0-dev libgoogle-perftools-dev libjson-c-dev liblzma-dev liblzo2-dev default-libmysqlclient-dev libpcap-dev libpng-dev librrd-dev libsnappy-dev libssh-dev libvorbis-dev libxml2-dev unixodbc-dev unzip
-          EOF
-          if [ $? -eq 0 ]; then break; fi
-          sleep 10
-        done
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        apt-get install -y build-essential libcurl4-openssl-dev libfftw3-dev libgcrypt-dev libglib2.0-dev libgoogle-perftools-dev libjson-c-dev liblzma-dev liblzo2-dev default-libmysqlclient-dev libpcap-dev libpng-dev librrd-dev libsnappy-dev libssh-dev libvorbis-dev libxml2-dev unixodbc-dev unzip
+        EOF
         
     - name: SSH and clone sniffer repository
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
-        if [ -d "sniffer" ]; then
-          echo "Sniffer directory already exists."
-        else
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        if [ ! -d "sniffer" ]; then
           git clone https://github.com/xFlowResearch/sniffer.git
+        else
+          echo "Sniffer directory already exists."
         fi
         EOF
         
@@ -70,14 +62,10 @@ jobs:
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        for i in {1..5}; do
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
-          cd sniffer
-          git log --oneline --decorate
-          git checkout db858a3f
-          git checkout -b version-30.8.1
-          echo "Setting up sniffer in client mode"
-          EOF
-          if [ $? -eq 0 ]; then break; fi
-          sleep 10
-        done
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        cd sniffer
+        git fetch
+        git checkout db858a3f
+        git checkout -b version-30.8.1
+        echo "Setting up sniffer in client mode"
+        EOF
