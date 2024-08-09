@@ -87,3 +87,21 @@ jobs:
         cd sniffer
         make clean
         EOF
+
+    - name: SSH and build sniffer
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        cd sniffer
+        make -j7
+        EOF
+
+    - name: SSH and install sniffer
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        cd sniffer
+        sudo make install
+        EOF
