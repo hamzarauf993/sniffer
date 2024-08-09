@@ -106,6 +106,14 @@ jobs:
         sudo make install
         EOF
         
+    - name: SSH and install libgcrypt20-dev
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        apt-get install -y libgcrypt20-dev
+        EOF
+
     - name: SSH and modify Makefile CXXFLAGS
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
@@ -114,6 +122,7 @@ jobs:
         cd sniffer
         sed -i 's/-O[0-9]/-O0/' Makefile
         EOF
+        
     - name: SSH and set up launch.json
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
