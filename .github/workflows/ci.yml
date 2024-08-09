@@ -105,3 +105,51 @@ jobs:
         cd sniffer
         sudo make install
         EOF
+        
+    - name: SSH and modify Makefile CXXFLAGS
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        cd sniffer
+        sed -i 's/-O[0-9]/-O0/' Makefile
+        EOF
+    - name: SSH and set up launch.json
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
+        mkdir -p sniffer/.vscode
+        cat <<EOT > sniffer/.vscode/launch.json
+        {
+          "version": "0.2.0",
+          "configurations": [
+            {
+              "name": "(gdb) Launch",
+              "type": "cppdbg",
+              "request": "launch",
+              "program": "\${workspaceFolder}/sniffer/voipmonitor",
+              "args": ["--config-file=\${workspaceFolder}/sniffer/config/voipmonitor-rpb.conf","-d","\${workspaceFolder}/voipmon-result", "-R", "-r", "/home/tayyaba/Desktop/pcaps/smsoip_test1.pcap"],
+              "stopAtEntry": false,
+              "cwd": "\${fileDirname}",
+              "environment": [],
+              "externalConsole": false,
+              "MIMode": "gdb",
+              "setupCommands": [
+                {
+                  "description": "Enable pretty-printing for gdb",
+                  "text": "-enable-pretty-printing",
+                  "ignoreFailures": true
+                },
+                {
+                  "description": "Set Disassembly Flavor to Intel",
+                  "text": "-gdb-set disassembly-flavor intel",
+                  "ignoreFailures": true
+                }
+              ]
+            }
+          ]
+        }
+        EOT
+        EOF
+
