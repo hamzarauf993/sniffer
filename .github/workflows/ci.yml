@@ -1,4 +1,4 @@
-name: Setup Sniffer with VPN
+name: Setup Sniffer in client
 
 on:
   workflow_dispatch:
