@@ -168,5 +168,5 @@ jobs:
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         cd sniffer
-        ./voipmonitor --config-file=config/voipmonitor.conf -k
+        ./voipmonitor --config-file=config/voipmonitor.conf -k -c
         EOF
