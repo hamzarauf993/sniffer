@@ -19,7 +19,22 @@ jobs:
     - name: Start VPN connection
       run: |
         sudo openvpn --config $GITHUB_WORKSPACE/HamzaRauf.ovpn --daemon
-        sleep 30 # Increased sleep time to ensure VPN connection is fully established
+    
+    - name: Wait for VPN connection to establish
+      run: |
+        for i in {1..10}; do
+        if ifconfig | grep -q 'tun0'; then
+        echo "VPN connection established."
+        break
+        fi
+        echo "Waiting for VPN connection..."
+        sleep 5
+        done
+        # If the VPN interface is still not up after the loop
+        if ! ifconfig | grep -q 'tun0'; then
+        echo "VPN connection failed to establish."
+        exit 1
+        fi
 
     - name: Check OpenVPN logs
       run: |
@@ -76,7 +91,11 @@ jobs:
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         cd sniffer
+        if[ ! -d "Makefile" ]then
         ./configure
+        else
+        echo "Makefile already exist"
+        fi
         EOF
 
     - name: SSH and clean sniffer build
