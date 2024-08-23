@@ -91,7 +91,7 @@ jobs:
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 root@172.30.205.125 'bash -s' <<'EOF'
         cd sniffer
-        if[ ! -d "Makefile" ]; then
+        if [ ! -d "Makefile" ]; then
         ./configure
         else
         echo "Makefile already exist"
